@@ -4,24 +4,29 @@
 #include "MAXREFDES11.h"
 #include "PID.h"
 
+Pressure::Pressure()
+{
+  // empty constructor
+}
+
 Pressure::Pressure(int MISO, int MOSI, int SCK, int LDAC_dac, int LDAC_adc, int SS_dac, int SS_adc, double _Kp, double _Ki, double _Kd, double _setPoint):
 	dac(MISO, MOSI, SCK, LDAC_dac, SS_dac),
 	adc(MISO, MOSI, SCK, LDAC_adc, SS_adc),
-	pid(dt, maxPressure, minPressure, Kp, Kd, Ki)
+	pid(dt, maxPressure, minPressure, Kp, Kd, Ki),
+  Kp(_Kp),
+  Ki(_Ki),
+  Kd(_Kd),
+  setPoint(_setPoint)
 {
-  Kp = _Kp;
-  Ki = _Ki;
-  Kd = _Kd;
-  setPoint = _setPoint;
 }
 
 void Pressure::changeValues(double newKp, double newKi, double newKd, double newSetPoint)
 {
   if (newSetPoint > 35) {
-    Serial.println("Error, resetting to 35");
+    //Serial.println("Error, resetting to 35");
     setPoint = 35;
   } else if (newSetPoint < 0) {
-    Serial.println("Error, resetting to 0");
+    //Serial.println("Error, resetting to 0");
     setPoint = 0;
   } else {
     setPoint = newSetPoint;
@@ -45,14 +50,14 @@ void Pressure::runPressure()
 void Pressure::setPressure(float pressure) {
 	// error check
 	if (pressure > 37) {
-		Serial.println("Error, resetting to 35");
+		//Serial.println("Error, resetting to 35");
 		pressure = 35;
 	}
 	if (pressure < -2) {
-		Serial.println("Error, resetting to 0");
+		//Serial.println("Error, resetting to 0");
 		pressure = 0;
 	}
-	uint16_t data = (pressure + 0.3)/35*65535;
+	uint16_t data = (uint16_t)((pressure + 0.3)/35*65535);
 	data = data & 0xffff;
 	uint8_t first = 0b00010000 | (data >> 12);
 	uint16_t second = (data << 4) & (0xffff);

@@ -1,0 +1,18 @@
+#######################################
+# Syntax Coloring Map For DAC1284
+#######################################
+
+DAC1284	KEYWORD1
+
+
+
+write	KEYWORD2
+reset	KEYWORD2
+button	KEYWORD2
+
+DAC_A	LITERAL1
+DAC_B	LITERAL1
+DAC_ALL	LITERAL1
+RESET_A	LITERAL1
+RESET_B	LITERAL1
+RESET_ALL	LITERAL1

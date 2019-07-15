@@ -8,6 +8,7 @@
 class AD5760
 {
 	public:
+    AD5760 ();
 		AD5760 (int MISO, int MOSI, int SCK, int LDAC, int SS);
 		void initialize();
 		void sendSequence(uint8_t first, uint8_t second, uint8_t third);

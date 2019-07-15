@@ -2,6 +2,10 @@
 #include <math.h>
 #include "MAX31865.h"
 
+MAX31865::MAX31865 (){
+  // empty
+}
+
 MAX31865::MAX31865 (int _MISO, int _MOSI, int _SCK, int _LDAC, int _SS) {
 	MISO = _MISO;
   MOSI = _MOSI;
@@ -10,6 +14,7 @@ MAX31865::MAX31865 (int _MISO, int _MOSI, int _SCK, int _LDAC, int _SS) {
   LDAC = _LDAC;
 	
 	pinMode(SS, OUTPUT);
+  pinMode(LDAC, OUTPUT);
 	
 	digitalWrite(SS, HIGH);
   digitalWrite(MOSI, LOW);
@@ -42,16 +47,16 @@ double MAX31865::readTemp(){
   uint8_t curr_status = out[7];
 
   if ((curr_status & 0x80) == 0x80){
-    Serial.println("High threshold limit");
+    //Serial.println("High threshold limit");
     return -1;
   } else if ((curr_status & 0x40) == 0x40){
-    Serial.println("Low threshold limit");
+    //Serial.println("Low threshold limit");
     return -1;
   } else if ((curr_status & 0x04) == 0x04){
-    Serial.println("Overvoltage/Undervoltage");
+    //Serial.println("Overvoltage/Undervoltage");
     return -1;
   } else {
-    Serial.println(temp_C);
+    //Serial.println(temp_C);
     return temp_C;
   }
 }

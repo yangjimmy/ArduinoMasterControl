@@ -1,6 +1,10 @@
 #include "MAXREFDES11.h"
 #include "Arduino.h"
 
+MAXREFDES11::MAXREFDES11(){
+  // empty constructor
+}
+
 MAXREFDES11::MAXREFDES11 (int _MISO, int _MOSI, int _SCK, int _LDAC, int _SS) {
 	MISO = _MISO;
 	MOSI = _MOSI;
@@ -9,6 +13,7 @@ MAXREFDES11::MAXREFDES11 (int _MISO, int _MOSI, int _SCK, int _LDAC, int _SS) {
 	LDAC = _LDAC;
 	
 	pinMode(SS, OUTPUT);
+  pinMode(LDAC, OUTPUT);
 	
 	digitalWrite(SS, HIGH);
   digitalWrite(MOSI, LOW);

@@ -15,12 +15,13 @@
 #define LDAC_ADC 50 // ADC LDAC
 #define LDAC_DAC 52 // DAC LDAC
 #define LDAC_RTD 54 // RTD Digital converter LDAC
+#define LDAC_SC 44 // Snipcard LDAC
 
 
 // initialize variables
 String inString = "";
-Heat heatControl;
-Pressure pressureControl;
+Heat *heatControl = new Heat();
+Pressure *pressureControl = new Pressure();
 
 int setPointPresIndex;
 int pPresIndex;
@@ -51,7 +52,6 @@ void setup() {
   pinMode(MISO, INPUT);
   pinMode(MOSI, OUTPUT);
   pinMode(SCK, OUTPUT);
-  pinMode(LDAC, OUTPUT);
 
   digitalWrite(MOSI, LOW);
   digitalWrite(SCK, LOW);
@@ -60,10 +60,10 @@ void setup() {
 void loop() {
   readCommand();
   if (hasSetPressure=true){
-    pressureControl.runPressure();
+    (*pressureControl).runPressure();
   }
   if (hasSetHeat=true){
-    heatControl.runHeat();
+    (*heatControl).runHeat();
   }
 }
 
@@ -79,56 +79,90 @@ void readCommand() {
 
 void beginRead(){
   while (Serial.available() > 0) {
+    int inChar = Serial.read();
     if (inChar != (int)'\n') {
       // As long as the incoming byte is not a newline, convert the incoming byte to a char and add it to the string
-      Serial.println("incoming char");
-      Serial.println((char)inChar);
+      //Serial.println("incoming char");
+      //Serial.println((char)inChar);
       inString += (char)inChar;
-      Serial.println("current string");
-      Serial.println(inString);
+      //Serial.println("current string");
+      //Serial.println(inString);
     }
     // if you get a newline, decompose the string and perform the command
     else {
-      String command = inString.substring(1,5);
+      Serial.println("Done Read");
+      String command = inString.substring(0,4);
+      Serial.println(command);
       if (command == "SPRS"){
-        int setPointPresIndex = inString.indexOf('S');
-        int pPresIndex = inString.indexOf('P');
-        int iPresIndex = inString.indexOf('I');
-        int dPresIndex = inString.indexOf('D');
-        double setPointPres = (inString.substring(setPointPresIndex,pIndex)).toDouble();
-        double pPres = (inString.substring(pIndex,iIndex)).toDouble();
-        double iPres = (inString.substring(iIndex,dIndex)).toDouble();
-        double dPres = (inString.substring(dIndex,inString.length()).toDouble();
+        int setPointPresIndex = inString.lastIndexOf('S');
+        Serial.println(setPointPresIndex);
+        int pPresIndex = inString.lastIndexOf('P');
+        Serial.println(pPresIndex);
+        int iPresIndex = inString.lastIndexOf('I');
+        Serial.println(iPresIndex);
+        int dPresIndex = inString.lastIndexOf('D');
+        Serial.println(dPresIndex);
+        double setPointPres = (double)((inString.substring(setPointPresIndex+1,pPresIndex)).toFloat());
+        //Serial.println("SetPoint Value");
+        //Serial.println(setPointPres);
+        double pPres = (double)((inString.substring(pPresIndex+1,iPresIndex)).toFloat());
+        Serial.println("Pressure P Value");
+        Serial.println(pPres);
+        double iPres = (double)((inString.substring(iPresIndex+1,dPresIndex)).toFloat());
+        Serial.println("Pressure I Value");
+        Serial.println(iPres);
+        double dPres = (double)((inString.substring(dPresIndex+1,inString.length())).toFloat());
+        Serial.println("Pressure D Value");
+        Serial.println(dPres);
         if (hasSetPressure==false){
-          pressureControl = Pressure(MISO, MOSI, SCK, LDAC, SS_DAC, SS_ADC, pPresIndex, iPresIndex, dPresIndex, setPointPres);
+          delete pressureControl;
+          pressureControl = new Pressure(MISO, MOSI, SCK, LDAC_DAC, LDAC_ADC, SS_DAC, SS_ADC, pPresIndex, iPresIndex, dPresIndex, setPointPres);
           hasSetPressure=true;
         }
         else {
-          pressureControl.changeValues(pPresIndex, iPresIndex, dPresIndex, setPointPres);
+          (*pressureControl).changeValues(pPresIndex, iPresIndex, dPresIndex, setPointPres);
         }
+        return;
       } else if (command == "STMP"){
-        int setPointTempIndex = inString.indexOf('S');
-        int pTempIndex = inString.indexOf('P');
-        int iTempIndex = inString.indexOf('I');
-        int dTempIndex = inString.indexOf('D');
-        double setPointTemp = (inString.substring(setPointTempIndex,pIndex)).toDouble();
-        double pTemp = (inString.substring(pTempIndex,iTempIndex)).toDouble();
-        double iTemp = (inString.substring(iTempIndex,dTempIndex)).toDouble();
-        double dTemp = (inString.substring(dTempIndex,inString.length()).toDouble();
+        int setPointTempIndex = inString.lastIndexOf('S');
+        Serial.println(setPointTempIndex);
+        int pTempIndex = inString.lastIndexOf('P');
+        Serial.println(pTempIndex);
+        int iTempIndex = inString.lastIndexOf('I');
+        Serial.println(iTempIndex);
+        int dTempIndex = inString.lastIndexOf('D');
+        Serial.println(dTempIndex);
+        double setPointTemp = (double)((inString.substring(setPointTempIndex+1,pTempIndex)).toDouble());
+        Serial.println("SetPoint Value");
+        Serial.println(setPointPres);
+        double pTemp = (double)((inString.substring(pTempIndex+1,iTempIndex)).toFloat());
+        Serial.println("Temperature P Value");
+        Serial.println(pTemp);
+        double iTemp = (double)((inString.substring(iTempIndex+1,dTempIndex)).toFloat());
+        Serial.println("Temperature I Value");
+        Serial.println(iTemp);
+        double dTemp = (double)((inString.substring(dTempIndex+1,inString.length())).toFloat());
+        Serial.println("Temperature D Value");
+        Serial.println(dTemp);
         if (hasSetHeat==false){
-          heatControl = Heat(MISO, MOSI, SCK, LDAC, SS_RTD, SS_SC, pTempIndex, iTempIndex, dTempIndex, setPointTemp);
+          delete heatControl;
+          heatControl = new Heat(MISO, MOSI, SCK, LDAC_RTD, LDAC_SC, SS_RTD, SS_SC, pTempIndex, iTempIndex, dTempIndex, setPointTemp);
           hasSetHeat=true;
         }
         else {
-          heatControl.changeValues(pTempIndex, iTempIndex, dTempIndex, setPointTemp);
+          (*heatControl).changeValues(pTempIndex, iTempIndex, dTempIndex, setPointTemp);
         }
+        return;
       } else if (command == "RPRS"){
-        Serial.println(pressureControl.getPressure());
+        Serial.println((*pressureControl).getPressure());
+        return;
       } else if (command == "RTMP"){
-        Serial.println(heatControl.getTemperature());
+        Serial.println((*heatControl).getTemperature());
+        return;
       } else if (command == "SVLT"){
-        
+        return;
       }
+    }
   }
 }
 

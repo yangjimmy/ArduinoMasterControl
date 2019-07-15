@@ -1,21 +1,23 @@
 // PID Heat Control
-#ifndef HEAT_H
-#define HEAT_H
+#ifndef HEAT_H_
+#define HEAT_H_
 #include "Arduino.h"
 #include "Heat.h"
 #include "MAX31865.h"
 #include <math.h>
 #include "PID.h"
-//#include "SnipCard.h" // will borrow Gokul's code for the SnipCard
+#include "DAC1284.h"
 
 class Heat {
 	public:
-		Heat(int MISO, int MOSI, int SCK, int LDAC, int SS_rtd, double Kp, double Ki, double Kd, double setPoint);
+    Heat();
+		Heat(int MISO, int MOSI, int SCK, int LDAC_rtd, int LDAC_snipcard, int SS_rtd, int SS_snipcard, double Kp, double Ki, double Kd, double setPoint);
 		void runHeat();
 		void changeValues(double newKp, double newKi, double newKd, double newSetPoint); 
 		void setPower(double percent);
 		double getTemperature();
 	private:
+    DAC1284 sc;
 		MAX31865 rtd;
 		double Kp;
 		double Ki;

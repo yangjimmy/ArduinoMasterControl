@@ -26,6 +26,9 @@ class PIDImpl
         double _integral;
 };
 
+PID::PID() {
+  
+}
 
 PID::PID( double dt, double maximum, double minimum, double Kp, double Kd, double Ki )
 {

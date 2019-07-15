@@ -4,6 +4,10 @@
 #include "AD5760.h"
 #include "Arduino.h"
 
+AD5760::AD5760(){
+  // empty constructor
+}
+
 AD5760::AD5760 (int _MISO, int _MOSI, int _SCK, int _LDAC, int _SS) {
 	MISO = _MISO;
   MOSI = _MOSI;
@@ -12,10 +16,11 @@ AD5760::AD5760 (int _MISO, int _MOSI, int _SCK, int _LDAC, int _SS) {
   LDAC = _LDAC;
 	
 	pinMode(SS, OUTPUT);
+  pinMode(LDAC, OUTPUT);
 	
 	digitalWrite(SS, HIGH);
-    digitalWrite(MOSI, LOW);
-    digitalWrite(SCK, LOW);
+  digitalWrite(MOSI, LOW);
+  digitalWrite(SCK, LOW);
 	initialize();
 }
 
