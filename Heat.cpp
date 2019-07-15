@@ -2,17 +2,17 @@
 #include "Heat.h"
 #include "MAX31865.h"
 #include <math.h>
-#include "SnipCard.h" // will borrow Gokul's code for the SnipCard
+//#include "SnipCard.h" // will borrow Gokul's code for the SnipCard
 #define en 2.718281828459
 
 class Heat
 {
-	Heat::Heat(int MISO, int MOSI, int SCK, int LDAC, int SS_rtd, int SS_snipcard, double Kp, double Ki, double Kd, double setPoint)
+	Heat::Heat(int MISO, int MOSI, int SCK, int LDAC, int SS_rtd, int SS_snipcard, double Kp, double Ki, double Kd, double _setPoint)
 	{
 		rtd = MAX31865(MISO, MOSI, SCK, LDAC, SS_rtd);
     snipcard = SnipCard(MISO, MOSI, SCK, LDAC, SS_snipcard);
 		pid = PID(dt, maxTemp, minTemp, Kp, Kd, Ki);
-		this.setPoint = setPoint;
+		setPoint = _setPoint;
 	}
 	
 	void Heat::runHeat() {

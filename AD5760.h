@@ -12,8 +12,8 @@ class AD5760
 		void initialize();
 		void sendSequence(uint8_t first, uint8_t second, uint8_t third);
 	private:
-		static int MISO, MOSI, SCK, LDAC, SS;
+		int MISO, MOSI, SCK, LDAC, SS;
 		void sendByte(uint8_t value);
-}
+};
 
 #endif

@@ -5,7 +5,8 @@
 #include "Heat.h"
 #include "MAX31865.h"
 #include <math.h>
-#include "SnipCard.h" // will borrow Gokul's code for the SnipCard
+#include "PID.h"
+//#include "SnipCard.h" // will borrow Gokul's code for the SnipCard
 
 class Heat {
 	public:
@@ -24,6 +25,6 @@ class Heat {
 		const double maxTemp = 150; // max temperature in deg Celsius
 		const double minTemp = 10; // min pressure in deg Celsius
 		const double dt = 0.01; // 1 second refresh to give system time to adjust
-}
+};
 
-#ENDIF
+#endif

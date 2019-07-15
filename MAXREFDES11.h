@@ -5,11 +5,11 @@
 class MAXREFDES11
 {
 	public:
-		MAXREFDES11 (int MISO, int MOSI, int SCK, int LDAC, int SS);
+		MAXREFDES11 (int _MISO, int _MOSI, int _SCK, int _LDAC, int _SS);
 		double readVoltage();
 	private:
-		static int MISO, MOSI, SCK, LDAC, SS;
-		void receiveByte();
-}
+		int MISO, MOSI, SCK, LDAC, SS;
+		byte receiveByte();
+};
 
 #endif

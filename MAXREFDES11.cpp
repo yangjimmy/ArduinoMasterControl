@@ -1,14 +1,14 @@
 #include "MAXREFDES11.h"
 #include "Arduino.h"
 
-MAXREFDES11::MAXREFDES11 (int MISO, int MOSI, int SCK, int LDAC, int SS) {
-	this.MISO = MISO;
-	this.MOSI = MOSI;
-	this.SCK = SCK;
-	this.SS = SS;
-	this.LDAC = LDAC;
+MAXREFDES11::MAXREFDES11 (int _MISO, int _MOSI, int _SCK, int _LDAC, int _SS) {
+	MISO = _MISO;
+	MOSI = _MOSI;
+	SCK = _SCK;
+	SS = _SS;
+	LDAC = _LDAC;
 	
-	pinMode(this.SS, OUTPUT);
+	pinMode(SS, OUTPUT);
 	
 	digitalWrite(SS, HIGH);
   digitalWrite(MOSI, LOW);

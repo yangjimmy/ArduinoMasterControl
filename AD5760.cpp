@@ -4,18 +4,18 @@
 #include "AD5760.h"
 #include "Arduino.h"
 
-AD5760::AD5760 (int MISO, int MOSI, int SCK, int LDAC, int SS) {
-	this.MISO = MISO;
-	this.MOSI = MOSI;
-	this.SCK = SCK;
-	this.SS = SS;
-	this.LDAC = LDAC;
+AD5760::AD5760 (int _MISO, int _MOSI, int _SCK, int _LDAC, int _SS) {
+	MISO = _MISO;
+  MOSI = _MOSI;
+  SCK = _SCK;
+  SS = _SS;
+  LDAC = _LDAC;
 	
-	pinMode(this.SS, OUTPUT);
+	pinMode(SS, OUTPUT);
 	
-	digitalWrite(this.SS, HIGH);
-    digitalWrite(this.MOSI, LOW);
-    digitalWrite(this.SCK, LOW);
+	digitalWrite(SS, HIGH);
+    digitalWrite(MOSI, LOW);
+    digitalWrite(SCK, LOW);
 	initialize();
 }
 
@@ -45,10 +45,10 @@ void AD5760::initialize() {
   uint8_t software_high = 0b01000000;
   uint8_t software_mid = 0b00000000;
   uint8_t software_low = 0b00000000;
-  dac.sendSequence(software_high, software_mid, software_low);
+  sendSequence(software_high, software_mid, software_low);
 
   uint8_t control_high = 0b00100000;
   uint8_t control_mid = 0b00000000;
   uint8_t control_low = 0b00010010;
-  dac.sendSequence(control_high, control_mid, control_low);
+  sendSequence(control_high, control_mid, control_low);
 }

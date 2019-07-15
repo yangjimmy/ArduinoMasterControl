@@ -8,7 +8,7 @@
 class Pressure
 {
 	public:
-		Pressure (int MISO, int MOSI, int SCK, int LDAC, int SS_dac, int SS_adc, double Kp, double Ki, double Kd, double setPoint);
+		Pressure (int MISO, int MOSI, int SCK, int LDAC_dac, int LDAC_adc, int SS_dac, int SS_adc, double Kp, double Ki, double Kd, double setPoint);
 		void runPressure();
 		void changeValues(double newKp, double newKi, double newKd, double newSetPoint);
 		void setPressure(float pressure);
@@ -23,7 +23,7 @@ class Pressure
 		double setPoint;
 		const double maxPressure = 36; // max pressure in bars (atms)
 		const double minPressure = -2; // min pressure in bars (atms)
-		const double dt = 1 // 1 second refresh to give system time to adjust
-}
+		const double dt = 1; // 1 second refresh to give system time to adjust
+};
 
 #endif
