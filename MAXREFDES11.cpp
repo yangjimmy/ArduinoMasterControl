@@ -21,6 +21,7 @@ MAXREFDES11::MAXREFDES11 (int _MISO, int _MOSI, int _SCK, int _LDAC, int _SS) {
 }
 
 double MAXREFDES11::readVoltage(){
+  Serial.println("voltage read");
   byte zeros;
   byte first;
   byte second;

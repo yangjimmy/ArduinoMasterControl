@@ -66,6 +66,7 @@ void Pressure::setPressure(float pressure) {
 }
 
 double Pressure::getPressure() {
+  Serial.println("pressure read");
 	double voltage = adc.readVoltage();
 	return voltage/10*35;
 }

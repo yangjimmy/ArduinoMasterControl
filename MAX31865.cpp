@@ -22,6 +22,7 @@ MAX31865::MAX31865 (int _MISO, int _MOSI, int _SCK, int _LDAC, int _SS) {
 }
 
 double MAX31865::readTemp(){
+  Serial.println("temperature read");
   writeRegister(0, 0xA2);
   delay(100);
   byte out [8];

@@ -1,3 +1,5 @@
+// Communication to/from Qt interface uses Gokul's protocol
+
 #include "AD5760.h"
 #include "Pressure.h"
 #include "Heat.h"
@@ -41,8 +43,8 @@ double pTemp;
 double iTemp;
 double dTemp;
 
-bool hasSetPressure;
-bool hasSetHeat;
+bool hasSetPressure = false;
+bool hasSetHeat = false;
 
 // begin the program
 void setup() {
@@ -59,10 +61,10 @@ void setup() {
 
 void loop() {
   readCommand();
-  if (hasSetPressure=true){
+  if (hasSetPressure==true){
     (*pressureControl).runPressure();
   }
-  if (hasSetHeat=true){
+  if (hasSetHeat==true){
     (*heatControl).runHeat();
   }
 }

@@ -49,5 +49,6 @@ void Heat::setPower(double x) {
 }
 
 double Heat::getTemperature() {
+  Serial.println("temperature read");
 	return rtd.readTemp();
 }
