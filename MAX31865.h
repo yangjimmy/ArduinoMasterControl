@@ -7,10 +7,10 @@ class MAX31865
 {
 	public:
     MAX31865 ();
-		MAX31865 (int _MISO, int _MOSI, int _SCK, int _LDAC, int _SS);
+		MAX31865 (int param_MISO, int param_MOSI, int param_SCK, int param_LDAC, int param_SS);
 		double readTemp();
 	private:
-		int MISO, MOSI, SCK, LDAC, SS;
+		int _MISO, _MOSI, _SCK, _LDAC, _SS;
 		void writeRegister(uint8_t regNumber, uint8_t data);
 		void readRegisters(uint8_t regNumStart, int numRegisters, byte *data_out);
 		void sendByte(uint8_t value);

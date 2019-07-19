@@ -41,12 +41,12 @@ DAC1284::DAC1284 (){
   // empty
 }
 
-DAC1284::DAC1284 (int SCK, int SS, int MOSI)
+DAC1284::DAC1284 (int _SCK, int _SS, int _MOSI)
 {
 	
-	SCLK = (char)SCK;
-	SYNC = (char)SS;
-	DATA = (char)MOSI;
+	SCLK = (char)_SCK;
+	SYNC = (char)_SS;
+	DATA = (char)_MOSI;
 	
 	
 	pinMode(SYNC, OUTPUT);                            

@@ -9,11 +9,12 @@ class AD5760
 {
 	public:
     AD5760 ();
-		AD5760 (int MISO, int MOSI, int SCK, int LDAC, int SS);
+		AD5760 (int param_MISO, int param_MOSI, int param_SCK, int param_LDAC, int param_SS);
 		void initialize();
 		void sendSequence(uint8_t first, uint8_t second, uint8_t third);
+		void getValues();
 	private:
-		int MISO, MOSI, SCK, LDAC, SS;
+		int _MISO, _MOSI, _SCK, _LDAC, _SS;
 		void sendByte(uint8_t value);
 };
 

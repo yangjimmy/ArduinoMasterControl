@@ -11,7 +11,7 @@
 class Heat {
 	public:
     Heat();
-		Heat(int MISO, int MOSI, int SCK, int LDAC_rtd, int LDAC_snipcard, int SS_rtd, int SS_snipcard, double Kp, double Ki, double Kd, double setPoint);
+		Heat(int _MISO, int _MOSI, int _SCK, int _LDAC_rtd, int _LDAC_snipcard, int _SS_rtd, int _SS_snipcard, double _Kp, double _Ki, double _Kd, double _setPoint);
 		void runHeat();
 		void changeValues(double newKp, double newKi, double newKd, double newSetPoint); 
 		void setPower(double percent);

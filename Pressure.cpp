@@ -9,6 +9,7 @@ Pressure::Pressure()
   // empty constructor
 }
 
+/*
 Pressure::Pressure(int MISO, int MOSI, int SCK, int LDAC_dac, int LDAC_adc, int SS_dac, int SS_adc, double _Kp, double _Ki, double _Kd, double _setPoint):
 	dac(MISO, MOSI, SCK, LDAC_dac, SS_dac),
 	adc(MISO, MOSI, SCK, LDAC_adc, SS_adc),
@@ -18,6 +19,29 @@ Pressure::Pressure(int MISO, int MOSI, int SCK, int LDAC_dac, int LDAC_adc, int 
   Kd(_Kd),
   setPoint(_setPoint)
 {
+}
+*/
+
+Pressure::Pressure(int MISO, int MOSI, int SCK, int LDAC_dac, int LDAC_adc, int SS_dac, int SS_adc, double _Kp, double _Ki, double _Kd, double _setPoint)
+{
+  dac = AD5760(MISO, MOSI, SCK, LDAC_dac, SS_dac);
+  adc = MAXREFDES11(MISO, MOSI, SCK, LDAC_adc, SS_adc);
+  pid = PID(dt, maxPressure, minPressure, Kp, Kd, Ki);
+  Kp = _Kp;
+  Ki = _Ki;
+  Kd = _Kd;
+  setPoint = _setPoint;
+}
+
+void Pressure::getDACValues(){
+  dac.getValues();
+}
+
+void Pressure::getSelfValues(){
+  Serial.println(Kp);
+  Serial.println(Ki);
+  Serial.println(Kd);
+  Serial.println(setPoint);
 }
 
 void Pressure::changeValues(double newKp, double newKi, double newKd, double newSetPoint)

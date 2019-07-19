@@ -14,6 +14,8 @@ class Pressure
 		void runPressure();
 		void changeValues(double newKp, double newKi, double newKd, double newSetPoint);
 		void setPressure(float pressure);
+    void getDACValues();
+    void getSelfValues();
 		double getPressure();
 	private:
 		AD5760 dac;

@@ -5,19 +5,19 @@ MAXREFDES11::MAXREFDES11(){
   // empty constructor
 }
 
-MAXREFDES11::MAXREFDES11 (int _MISO, int _MOSI, int _SCK, int _LDAC, int _SS) {
-	MISO = _MISO;
-	MOSI = _MOSI;
-	SCK = _SCK;
-	SS = _SS;
-	LDAC = _LDAC;
+MAXREFDES11::MAXREFDES11 (int param_MISO, int param_MOSI, int param_SCK, int param_LDAC, int param_SS) {
+	_MISO = param_MISO;
+	_MOSI = param_MOSI;
+	_SCK = param_SCK;
+	_SS = param_SS;
+	_LDAC = param_LDAC;
 	
-	pinMode(SS, OUTPUT);
-  pinMode(LDAC, OUTPUT);
+	pinMode(_SS, OUTPUT);
+  pinMode(_LDAC, OUTPUT);
 	
-	digitalWrite(SS, HIGH);
-  digitalWrite(MOSI, LOW);
-  digitalWrite(SCK, LOW);
+	digitalWrite(_SS, HIGH);
+  digitalWrite(_MOSI, LOW);
+  digitalWrite(_SCK, LOW);
 }
 
 double MAXREFDES11::readVoltage(){
@@ -28,11 +28,11 @@ double MAXREFDES11::readVoltage(){
   uint16_t value;
   double result;
 
-  digitalWrite(SS, LOW);
+  digitalWrite(_SS, LOW);
   zeros = receiveByte();
   first = receiveByte();
   second = receiveByte();
-  digitalWrite(SS, HIGH);
+  digitalWrite(_SS, HIGH);
   delay(10);
   value = (first<<8) | second;
 
@@ -44,12 +44,12 @@ byte MAXREFDES11::receiveByte(){
   byte result = 0x00;
   int i = 0;
   for (i; i<8; i++){
-    digitalWrite(SCK, HIGH);
+    digitalWrite(_SCK, HIGH);
     result = result << 1;
-    if (digitalRead(MISO)==HIGH){
+    if (digitalRead(_MISO)==HIGH){
       result = result | 0x1;
     }
-    digitalWrite(SCK, LOW);
+    digitalWrite(_SCK, LOW);
   }
   return result;
 }
