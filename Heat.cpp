@@ -2,7 +2,8 @@
 #include "Heat.h"
 #include "MAX31865.h"
 #include <math.h>
-#include "DAC1284.h"
+//#include "DAC1284.h"
+#include "AD5760.h"
 
 Heat::Heat() {
 	// empty constructor
@@ -22,11 +23,11 @@ Heat::Heat(int MISO, int MOSI, int SCK, int LDAC_rtd, int LDAC_snipcard, int SS_
 }
 */
 
-Heat::Heat(int _MISO, int _MOSI, int _SCK, int _LDAC_rtd, int _LDAC_snipcard, int _SS_rtd, int _SS_snipcard, double _Kp, double _Ki, double _Kd, double _setPoint)
+Heat::Heat(int _MISO, int _MOSI, int _SCK, int _LDAC_rtd, int _LDAC_dac, int _SS_rtd, int _SS_dac, double _Kp, double _Ki, double _Kd, double _setPoint)
 {
 	rtd = MAX31865(_MISO, _MOSI, _SCK, _LDAC_rtd, _SS_rtd);
 	Serial.println("rtd");
-	sc = DAC1284(_SCK, _SS_snipcard, _MOSI);
+	dac = AD5760(_MISO, _MOSI, _SCK, _LDAC_dac, _SS_dac);
 	Serial.println("sc");
 	pid = PID(dt, maxTemp, minTemp, _Kp, _Kd, _Ki);
 	Serial.println("pid");
@@ -62,8 +63,7 @@ void Heat::changeValues(double newKp, double newKi, double newKd, double newSetP
 void Heat::setPower(double x) {
 	// x=percentage of max power
 	float voltageSend = (float)(4.6669 / (1 + pow(2.718281828459, (-0.0391 * (x - 39.8077)))));
-	uint16_t data = (uint16_t)voltageSend;
-	sc.writeSC(DAC_ALL, data);
+	dac.setVoltage(voltageSend);
 }
 
 double Heat::getTemperature() {

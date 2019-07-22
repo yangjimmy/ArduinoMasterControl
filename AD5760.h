@@ -13,6 +13,7 @@ class AD5760
 		void initialize();
 		void sendSequence(uint8_t first, uint8_t second, uint8_t third);
 		void getValues();
+    void setVoltage(float voltage);
 	private:
 		int _MISO, _MOSI, _SCK, _LDAC, _SS;
 		void sendByte(uint8_t value);

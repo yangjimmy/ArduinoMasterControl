@@ -55,6 +55,19 @@ void AD5760::sendSequence(uint8_t first, uint8_t second, uint8_t third) {
 	digitalWrite(_SS, HIGH);
 }
 
+void AD5760::setVoltage(float voltage) {
+  uint16_t data = (uint16_t) (voltage * 65535 / 10);
+  data = data & 0xffff;
+  uint8_t first = 0b00010000 | (data >> 12);
+  uint16_t second = (data << 4) & (0xffff);
+
+  digitalWrite(SS, LOW);
+  sendByte(first);
+  sendByte((uint8_t)((second >> 8) & 0xff));
+  sendByte((uint8_t)((second) & 0xf0));
+  digitalWrite(SS, HIGH);
+}
+
 void AD5760::initialize() {
 	uint8_t software_high = 0b01000000;
 	uint8_t software_mid = 0b00000000;

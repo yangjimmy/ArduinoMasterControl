@@ -6,7 +6,7 @@
 #include "MAX31865.h"
 #include <math.h>
 #include "PID.h"
-#include "DAC1284.h"
+#include "AD5760.h"
 
 class Heat {
 	public:
@@ -17,7 +17,7 @@ class Heat {
 		void setPower(double percent);
 		double getTemperature();
 	private:
-    DAC1284 sc;
+    AD5760 dac;
 		MAX31865 rtd;
 		double Kp;
 		double Ki;
