@@ -13,7 +13,7 @@ class Heat {
 		Heat();
 		//Heat(int _MISO, int _MOSI, int _SCK, int _LDAC_rtd, int _LDAC_snipcard, int _SS_rtd, int _SS_snipcard, double _Kp, double _Ki, double _Kd, double _setPoint);
 		Heat(int _MISO, int _MOSI, int _SCK, int _LDAC_rtd, int _SS_rtd, int _PWMPin, double _Kp, double _Ki, double _Kd, double _setPoint);
-		void runInitial(unsigned long startTime, unsigned  long previousTime, unsigned long currentTime, bool finished);
+		void runInitial(unsigned long *startTime, unsigned long previousTime, unsigned long currentTime, bool *finished);
 		void runHeat(unsigned long previous, unsigned long current);
 		void changeValues(double newKp, double newKi, double newKd, double newSetPoint); 
 		void setPower(double percent);

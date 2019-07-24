@@ -57,14 +57,17 @@ Heat::Heat(int _MISO, int _MOSI, int _SCK, int _LDAC_rtd, int _SS_rtd, int _PWMP
 	Kd = _Kd;
 }
 
-void Heat::runInitial(unsigned long startTime, unsigned  long previousTime, unsigned long currentTime, bool finished) {
-	if ((currentTime-startTime)/1000000.0 < heater.initialHeating) {
+void Heat::runInitial(unsigned long *startTime, unsigned long previousTime, unsigned long currentTime, bool *finished) {
+	if ((currentTime-*startTime)/1000000.0 < heater.initialHeating) {
 		heater.initialRun();
 	}
 	else {
-		finished = true;
+    Serial.println("Finished init");
+		*finished = true;
 		heater.changeDuty(0);
-		runHeat(previousTime, currentTime);
+    *startTime = currentTime;
+    Serial.println(*startTime);
+    Serial.println(currentTime);
 	}
 }
 
@@ -108,7 +111,7 @@ void Heat::setPower(double x) {
 }
 
 double Heat::getTemperature() {
-	Serial.println("temperature read");
+	//Serial.println("temperature read");
 	return rtd.readTemp();
 }
 

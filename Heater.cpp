@@ -13,7 +13,8 @@ Heater::Heater(int _PWMPin) {
 }
 
 double Heater::initialHeatingTime(double heatCapacity, double mass, double currTemp, double setTemp, double wattage) {
-	initialHeating = heatCapacity * mass * (setTemp - setTemp) / wattage;
+	//initialHeating = heatCapacity * mass * (setTemp - setTemp) / wattage;
+  initialHeating = 8;
 	return initialHeating; // in seconds
 }
 
