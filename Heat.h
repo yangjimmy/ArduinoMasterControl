@@ -6,18 +6,21 @@
 #include "MAX31865.h"
 #include <math.h>
 #include "PID.h"
-#include "AD5760.h"
+#include "Heater.h"
 
 class Heat {
 	public:
-    Heat();
-		Heat(int _MISO, int _MOSI, int _SCK, int _LDAC_rtd, int _LDAC_snipcard, int _SS_rtd, int _SS_snipcard, double _Kp, double _Ki, double _Kd, double _setPoint);
-		void runHeat();
+		Heat();
+		//Heat(int _MISO, int _MOSI, int _SCK, int _LDAC_rtd, int _LDAC_snipcard, int _SS_rtd, int _SS_snipcard, double _Kp, double _Ki, double _Kd, double _setPoint);
+		Heat(int _MISO, int _MOSI, int _SCK, int _LDAC_rtd, int _SS_rtd, int _PWMPin, double _Kp, double _Ki, double _Kd, double _setPoint);
+		void runInitial(unsigned long startTime, unsigned  long previousTime, unsigned long currentTime, bool finished);
+		void runHeat(unsigned long previous, unsigned long current);
 		void changeValues(double newKp, double newKi, double newKd, double newSetPoint); 
 		void setPower(double percent);
 		double getTemperature();
+    void stopHeat();
 	private:
-    AD5760 dac;
+		Heater heater;
 		MAX31865 rtd;
 		double Kp;
 		double Ki;
@@ -26,7 +29,11 @@ class Heat {
 		PID pid;
 		const double maxTemp = 150; // max temperature in deg Celsius
 		const double minTemp = 10; // min pressure in deg Celsius
-		const double dt = 0.01; // 1 second refresh to give system time to adjust
+		double dt = 0;
+
+		const double heatCapacity = 0.91;
+		const double mass = 1.715;
+		const double wattage = 2.60;
 };
 
 #endif
