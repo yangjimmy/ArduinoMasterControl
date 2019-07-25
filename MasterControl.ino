@@ -17,7 +17,6 @@
 #define LDAC_ADC 50 // ADC LDAC
 #define LDAC_DAC 52 // DAC LDAC
 #define LDAC_RTD 54 // RTD Digital converter LDAC
-#define LDAC_SC 44 // Snipcard LDAC
 
 #define PWM_PIN 2 // PWM pin
 
