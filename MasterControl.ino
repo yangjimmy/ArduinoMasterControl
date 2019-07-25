@@ -12,7 +12,6 @@
 #define SS_ADC 49 // ADC slave select
 #define SS_DAC 51 // DAC slave select
 #define SS_RTD 53 // RTD Digital converter (MAX31865) slave select
-#define SS_SC 45 // Snipcard slave select
 // LDAC pins (test if they can be removed)
 #define LDAC_ADC 50 // ADC LDAC
 #define LDAC_DAC 52 // DAC LDAC
@@ -27,10 +26,6 @@ Heat *heatControl = new Heat();
 
 String inString = "";
 String command = "";
-//Heat *heatControl = new Heat(MISO, MOSI, SCK, LDAC_RTD, LDAC_SC, SS_RTD, SS_SC, 0, 0, 0, -1);
-//Pressure *pressureControl = new Pressure(MISO, MOSI, SCK, LDAC_DAC, LDAC_ADC, SS_DAC, SS_ADC, 0, 0, 0, -1);
-//Pressure pressureControl = Pressure(MISO, MOSI, SCK, LDAC_DAC, LDAC_ADC, SS_DAC, SS_ADC, 0, 0, 0, -1);
-//Heat heatControl = Heat(MISO, MOSI, SCK, LDAC_RTD, LDAC_SC, SS_RTD, SS_SC, 0, 0, 0, -1);
 
 int setPointPresIndex;
 int pPresIndex;
@@ -78,39 +73,27 @@ void loop() {
   inString = ""; // reset inString to prepare for new command
   
   if (hasSetPressure == true) {
-    //pressureControl.runPressure();
 	  currentTime = micros();
 	  (*pressureControl).runPressure();
 	  previousTime = currentTime;
   }
   if (hasSetHeat == true) {
-    Serial.println("set heat");
-    //heatControl.runHeat();
+    //Serial.println("set heat");
 	  currentTime = micros();
-    Serial.println(currentTime);
+    //Serial.println(currentTime);
 	  if (finishedInitHeat == false) {
 		  heatControl->runInitial(&startTime, previousTime, currentTime, &finishedInitHeat);
 	  }
 	  else if (finishedInitHeat && ((double)(abs(currentTime-startTime)/1000000.0) < heatTime)){
-      Serial.println(startTime);
-      Serial.println(currentTime);
+      //Serial.println(startTime);
+      //Serial.println(currentTime);
 		  heatControl->runHeat(previousTime, currentTime);
 	  } else if (finishedInitHeat && (double)(abs(currentTime-startTime)/1000000.0) > heatTime) {
       heatControl->stopHeat(); // PWM to zero
       hasSetHeat = false; // reset the system
 	  } else {
-      Serial.println(heatTime);
+      //Serial.println(heatTime);
 	  }
-   
-   /*
-   if ((double)((currentTime-startTime)/1000000.0) < heatTime){
-     (*heatControl).runHeat(previousTime, currentTime);
-    } else {
-      // PWM to zero
-      heatControl->stopHeat();
-      hasSetHeat = false;
-    }
-    */
 	  previousTime = currentTime;
   }
 }
@@ -144,42 +127,42 @@ void beginRead() {
       break;
     }
   }
-  Serial.println(inString);
-  Serial.println("Done Read");
+  //Serial.println(inString);
+  //Serial.println("Done Read");
   //String command = inString.substring(0, 4);
   command = inString.substring(0, 4);
-  Serial.println(command);
+  //Serial.println(command);
   if (command == "SPRS") {
     int setPointPresIndex = inString.lastIndexOf('S');
-    Serial.println(setPointPresIndex);
+    //Serial.println(setPointPresIndex);
     int pPresIndex = inString.lastIndexOf('P');
-    Serial.println(pPresIndex);
+    //Serial.println(pPresIndex);
     int iPresIndex = inString.lastIndexOf('I');
-    Serial.println(iPresIndex);
+    //Serial.println(iPresIndex);
     int dPresIndex = inString.lastIndexOf('D');
-    Serial.println(dPresIndex);
+    //Serial.println(dPresIndex);
     double setPointPres = (double)((inString.substring(setPointPresIndex + 1, pPresIndex)).toFloat());
     //Serial.println("SetPoint Value");
     //Serial.println(setPointPres);
     double pPres = (double)((inString.substring(pPresIndex + 1, iPresIndex)).toFloat());
-    Serial.println("Pressure P Value");
-    Serial.println(pPres);
+    //Serial.println("Pressure P Value");
+    //Serial.println(pPres);
     double iPres = (double)((inString.substring(iPresIndex + 1, dPresIndex)).toFloat());
-    Serial.println("Pressure I Value");
-    Serial.println(iPres);
+    //Serial.println("Pressure I Value");
+    //Serial.println(iPres);
     double dPres = (double)((inString.substring(dPresIndex + 1, inString.length())).toFloat());
-    Serial.println("Pressure D Value");
-    Serial.println(dPres);
+    //Serial.println("Pressure D Value");
+    //Serial.println(dPres);
     if (hasSetPressure == false) {
-      Serial.println("has set pressure is false");
+      //Serial.println("has set pressure is false");
       free(pressureControl);
-      Serial.println("new pressure control");
+      //Serial.println("new pressure control");
       pressureControl = new Pressure(MISO, MOSI, SCK, LDAC_DAC, LDAC_ADC, SS_DAC, SS_ADC, pPresIndex, iPresIndex, dPresIndex, setPointPres);
       hasSetPressure = true;
-	  previousTime = micros();
+	    previousTime = micros();
     }
     else {
-      Serial.println("has pressure control");
+      //Serial.println("has pressure control");
       (*pressureControl).changeValues(pPresIndex, iPresIndex, dPresIndex, setPointPres);
     }
     return;
@@ -216,11 +199,8 @@ void beginRead() {
       //Serial.println("has set heat is false");
       free(heatControl);
       //Serial.println("new heat control");
-      //heatControl = new Heat(MISO, MOSI, SCK, LDAC_RTD, LDAC_SC, SS_RTD, SS_SC, pTempIndex, iTempIndex, dTempIndex, setPointTemp);
 	    heatControl = new Heat(MISO, MOSI, SCK, LDAC_RTD, SS_RTD, PWM_PIN, pTempIndex, iTempIndex, dTempIndex, setPointTemp);
       //Serial.println("To next");
-      //(*heatControl).changeValues(pTempIndex, iTempIndex, dTempIndex, setPointTemp);
-      //heatControl.changeValues(pTempIndex, iTempIndex, dTempIndex, setPointTemp);
       hasSetHeat = true;
 	    startTime = micros();
       //Serial.print("---------start time----------");
@@ -228,18 +208,16 @@ void beginRead() {
 	    previousTime = micros();
     }
     else {
-      Serial.println("has set heat is true");
+      //Serial.println("has set heat is true");
       (*heatControl).changeValues(pTempIndex, iTempIndex, dTempIndex, setPointTemp);
-      //heatControl.changeValues(pTempIndex, iTempIndex, dTempIndex, setPointTemp);
     }
 
     return;
   } else if (command == "RPRS") {
     Serial.println((*pressureControl).getPressure());
-    //Serial.println(pressureControl.getPressure());
     return;
   } else if (command == "RTMP") {
-    Serial.println("RTMP");
+    //Serial.println("RTMP");
     Serial.println(heatControl->getTemperature());
     return;
   } else if (command == "SVLT") {

@@ -116,7 +116,7 @@ byte MAX31865::receiveByte() {
 }
 
 double MAX31865::calcTemp(uint16_t rtd_ADC_Code) {
-	const float R_REF = 428.8;
+	const float R_REF = 429.8;
 	const float Res0 = 100;
 	const float a = 0.00390830;
 	const float b = -0.000000577500;
