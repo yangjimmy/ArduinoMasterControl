@@ -8,7 +8,7 @@ class Heater
 public:
 	Heater();
 	Heater(int _PWMPin);
-	double initialHeatingTime(double heatCapacity, double mass, double currTemp, double setTemp, double wattage);
+	void initialHeatingTime(double heatCapacity, double mass, double currTemp, double setTemp, double wattage);
 	void initialRun();
 	void changeDuty(int dutyCycle);
 	double clamp(double n, double minn, double maxn);

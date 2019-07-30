@@ -3,6 +3,7 @@
 #include "AD5760.h"
 #include "Pressure.h"
 #include "Heat.h"
+#include <PID_v1.h>
 
 // Common pins
 #define MISO 46 // MISO pin
@@ -87,10 +88,19 @@ void loop() {
 	  else if (finishedInitHeat && ((double)(abs(currentTime-startTime)/1000000.0) < heatTime)){
       //Serial.println(startTime);
       //Serial.println(currentTime);
+      //Serial.println(heatTime);
+      
+      //Serial.println((currentTime-startTime)/1000000.0);
 		  heatControl->runHeat(previousTime, currentTime);
+      //Serial.println("end runheat");
 	  } else if (finishedInitHeat && (double)(abs(currentTime-startTime)/1000000.0) > heatTime) {
       heatControl->stopHeat(); // PWM to zero
       hasSetHeat = false; // reset the system
+      
+      Serial.println("Done");
+      Serial.println(heatTime);
+      Serial.println("total elapsed time");
+      Serial.println((currentTime-startTime)/1000000.0);
 	  } else {
       //Serial.println(heatTime);
 	  }
@@ -100,11 +110,12 @@ void loop() {
 
 
 void readCommand() {
-  Serial.println("In command");
+  //Serial.println("In command");
   if (Serial.available() > 0) {
-    Serial.println("In serial available");
+    //Serial.println("In serial available");
     int inChar = Serial.read();
     if (inChar == (int)'#') {
+      Serial.println("cmd registered");
       beginRead();
       return;
     } else {
@@ -115,6 +126,7 @@ void readCommand() {
 }
 
 void beginRead() {
+  delay(1);
   while (Serial.available() > 0) {
     //Serial.println("Available");
     int inChar = Serial.read();
@@ -126,6 +138,7 @@ void beginRead() {
     else {
       break;
     }
+    delay(1);
   }
   //Serial.println(inString);
   //Serial.println("Done Read");

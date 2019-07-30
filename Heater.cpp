@@ -12,10 +12,10 @@ Heater::Heater(int _PWMPin) {
 	analogWrite(PWMPin, 0);
 }
 
-double Heater::initialHeatingTime(double heatCapacity, double mass, double currTemp, double setTemp, double wattage) {
+void Heater::initialHeatingTime(double heatCapacity, double mass, double currTemp, double setTemp, double wattage) {
 	//initialHeating = heatCapacity * mass * (setTemp - setTemp) / wattage;
-  initialHeating = 8;
-	return initialHeating; // in seconds
+  initialHeating = 5;
+	//return initialHeating; // in seconds
 }
 
 void Heater::initialRun() {
