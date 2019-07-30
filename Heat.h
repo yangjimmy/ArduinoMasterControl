@@ -5,9 +5,8 @@
 #include "Heat.h"
 #include "MAX31865.h"
 #include <math.h>
-#include "PID_v1.h"
+#include "PID.h"
 #include "Heater.h"
-#include "PID_AutoTune_v0.h"
 
 class Heat {
 	public:
@@ -23,15 +22,11 @@ class Heat {
 	private:
 		Heater heater;
 		MAX31865 rtd;
-		double Kp = 0;
-		double Ki = 0;
-		double Kd = 0;
-		double *setPoint = 0;
-    double *input = 0;
-    double *output = 0;
-		PID pid = PID(input, output, setPoint, Kp, Ki, Kd, DIRECT);
-    PID_ATune aTune = PID_ATune(input, output);
-    bool tuning = false;
+		double Kp;
+		double Ki;
+		double Kd;
+		double setPoint;
+		PID pid;
 		const double maxTemp = 150; // max temperature in deg Celsius
 		const double minTemp = 10; // min pressure in deg Celsius
 		double dt = 0;
@@ -39,9 +34,6 @@ class Heat {
 		const double heatCapacity = 0.91;
 		const double mass = 1.715;
 		const double wattage = 2.60;
-
-    void AutoTuneHelper(bool start);
-    byte ATuneModeRemember=2;
 };
 
 #endif
