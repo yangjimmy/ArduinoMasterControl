@@ -3,7 +3,7 @@
 #include "Arduino.h"
 #include "AD5760.h"
 #include "MAXREFDES11.h"
-#include "PID_v1.h"
+#include "PID.h"
 
 class Pressure
 {
@@ -20,15 +20,11 @@ class Pressure
 	private:
 		AD5760 dac;
 		MAXREFDES11 adc;
-		
-		double Kp = 0;
-		double Ki = 0;
-		double Kd = 0;
-		double *setPoint = 0;
-    double *output = 0;
-    double *input = 0;
-    PID pid = PID(input, output, setPoint, Kp, Ki, Kd, DIRECT);
-    
+		PID pid;
+		double Kp;
+		double Ki;
+		double Kd;
+		double setPoint;
 		const double maxPressure = 36; // max pressure in bars (atms)
 		const double minPressure = -2; // min pressure in bars (atms)
 		const double dt = 1; // 1 second refresh to give system time to adjust
