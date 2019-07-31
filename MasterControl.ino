@@ -47,6 +47,8 @@ double dTemp;
 bool hasSetPressure = false;
 bool hasSetHeat = false;
 
+bool registered = false;
+
 bool finishedInitHeat = false;
 double heatTime = 0;
 
@@ -72,15 +74,11 @@ void setup() {
 }
 
 void loop() {
-  //Serial.println(1);
-  //doNothing();
-  //Serial.println(1);
   readCommand();
-  //delay(50);///
+  Serial.println("out of command");
   
   inString = ""; // reset inString to prepare for new command
   
-  //Serial.println(heatControl->getTemperature());
   if (hasSetPressure == true) {
 	  currentTime = micros();
 	  (*pressureControl).runPressure();
@@ -98,61 +96,57 @@ void loop() {
 	  else if (finishedInitHeat && ((double)(abs(currentTime-startTime)/1000000.0) < heatTime)){
       // attempt to maintain temperature
 		  heatControl->runHeat(previousTime, currentTime);
+      //Serial.println("finished init heat");
       currTemp = heatControl->getTemperature();
 	  } else if (finishedInitHeat && (double)(abs(currentTime-startTime)/1000000.0) > heatTime) {
       heatControl->stopHeat(); // PWM to zero
       hasSetHeat = false; // reset the system
       finishedInitHeat = false;      
 	  } else {
-      Serial.println("Parse error");
+      //Serial.println("Parse error");
 	  }
 	  previousTime = currentTime;
   }
+  if (hasSetHeat==true || hasSetPressure == true){
   outString += "P";
   outString += (int)currPres*100;
   outString += "T";
   outString += (int)currTemp*100;
   Serial.println(outString);
   outString="";
-  
-}
-
-void doNothing() {
-  // do nothing
+  //Serial.flush();
+  }
 }
 
 void readCommand() {
-  //Serial.println("In command");
-  if (Serial.available() > 0) {
+  Serial.println("In command");
+  //delay(10);
+  while ((Serial.available() > 0)&& registered==false) {
     //Serial.println("In serial available");
     
     int inChar = Serial.read();
+    Serial.println((char)inChar);
     if (inChar == (int)'#') {
       //Serial.println("cmd registered");
+      registered = true;
       beginRead();
       return;
     } else {
-      return;
-    }
-    
+      //return;
+    } 
   }
-  //return;
-  //return -1;
 }
-/*
-void beginRead() {
-  
-}
-*/
 
 void beginRead() {
-  delay(5);
+  delay(10);
+  //Serial.println("begin read");
   while (Serial.available() > 0) {
     //Serial.println("Available");
     int inChar = Serial.read();
     if (inChar != (int)'\n') {
       // As long as the incoming byte is not a newline, convert the incoming byte to a char and add it to the string
       inString += (char)inChar;
+      Serial.println(inString);
     }
     // if you get a newline, decompose the string and perform the command
     else {
@@ -160,7 +154,7 @@ void beginRead() {
     }
     delay(5);
   }
-  //Serial.println(inString);
+  Serial.println(inString);
   //Serial.println("Done Read");
   //String command = inString.substring(0, 4);
   command = inString.substring(0, 4);
