@@ -15,20 +15,18 @@ Heat::Heat(int _MISO, int _MOSI, int _SCK, int _LDAC_rtd, int _SS_rtd, int _PWMP
 {
 	rtd = MAX31865(_MISO, _MOSI, _SCK, _LDAC_rtd, _SS_rtd);
 	heater = Heater(_PWMPin);
-	*input = rtd.readTemp();
-	heater.initialHeatingTime(heatCapacity, mass, *input, _setPoint, wattage);
+	input = rtd.readTemp();
+	heater.initialHeatingTime(heatCapacity, mass, input, _setPoint, wattage);
 
-	*setPoint = _setPoint;
+	setPoint = _setPoint;
 	
 	Kp = _Kp;
 	Ki = _Ki;
 	Kd = _Kd;
 
   pid.SetTunings(Kp, Ki, Kd);
-  pid.SetOutputLimits(minTemp, maxTemp);
+  // k values ok
   pid.SetMode(AUTOMATIC);
-
-  //aTune = PID_ATune(input, output);
 }
 
 void Heat::runInitial(unsigned long *startTime, unsigned long previousTime, unsigned long currentTime, bool *finished) {
@@ -42,25 +40,19 @@ void Heat::runInitial(unsigned long *startTime, unsigned long previousTime, unsi
 		*finished = true;
 		heater.changeDuty(0);
     *startTime = currentTime;
-    //Serial.println(*startTime);
-    //Serial.println(currentTime);
 	}
 }
 
 
 void Heat::runHeat(unsigned long previous, unsigned long current) {
 	//double presentTemperature = getTemperature();
-	*input = getTemperature();
-  //Serial.println((long)*input);
-	//dt = (double)((current - previous)/1000000.0); // convert to seconds and double type
-  //Serial.println("in runHeat");
-	//pid = PID(dt, maxTemp, minTemp, Kp, Kd, Ki);
-  
+	input = getTemperature();
+    
   // autotune //
-  /*
+  
   if(tuning)
   {
-    
+    //Serial.println("tuning");
     byte val = (aTune.Runtime());
     if (val!=0)
     {
@@ -71,6 +63,11 @@ void Heat::runHeat(unsigned long previous, unsigned long current) {
       Kp = aTune.GetKp();
       Ki = aTune.GetKi();
       Kd = aTune.GetKd();
+//      Serial.println("k vals after tuning");
+//      Serial.println(Kp);
+//      Serial.println(Ki);
+//      Serial.println(Kd);
+//      Serial.println("---");
       pid.SetTunings(Kp,Ki,Kd);
       AutoTuneHelper(false);
     }
@@ -78,22 +75,24 @@ void Heat::runHeat(unsigned long previous, unsigned long current) {
   else {
     pid.Compute();
   }
-  */
-  pid.Compute();
+  
+  //pid.Compute();
   
 	// calculate precentage of power required
 	
-	double newDuty = *output;
+	double newDuty = output;
+ 
 	setPower(newDuty);
-
-  //Serial.println(*output);
+//  Serial.println("output");
+//  Serial.println(output);
+//  Serial.println("end output");
 }
 
 void Heat::changeValues(double newKp, double newKi, double newKd, double newSetPoint) {
 	Kp = newKp;
 	Ki = newKi;
 	Kd = newKd;
-	*setPoint = newSetPoint;
+	setPoint = newSetPoint;
 	//pid = PID(dt, maxTemp, minTemp, Kp, Kd, Ki);
   pid.SetTunings(Kp, Ki, Kd);
 }

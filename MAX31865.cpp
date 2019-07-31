@@ -53,7 +53,7 @@ double MAX31865::readTemp() {
 		return -1;
 	}
 	else if ((curr_status & 0x40) == 0x40) {
-		//Serial.println("Low threshold limit");
+		Serial.println("Low threshold limit");
 		//Serial.println(temp_C);
     return temp_C;
 	}
@@ -63,6 +63,7 @@ double MAX31865::readTemp() {
 	}
 	else {
 		//Serial.println(temp_C);
+   //Serial.println("normal");
 		return temp_C;
 	}
 }
