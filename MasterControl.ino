@@ -1,9 +1,7 @@
 // Communication to/from Qt interface uses Gokul's protocol
 
-#include "AD5760.h"
 #include "Pressure.h"
 #include "Heat.h"
-#include <PID_v1.h>
 
 // Common pins
 #define MISO 46 // MISO pin
@@ -18,7 +16,7 @@
 #define LDAC_DAC 52 // DAC LDAC
 #define LDAC_RTD 54 // RTD Digital converter LDAC
 
-#define PWM_PIN 2 // PWM pin
+#define PWM_PIN 10 // PWM pin
 
 
 // initialize variables
@@ -56,10 +54,14 @@ unsigned long previousTime = 0;
 unsigned long currentTime = 0;
 unsigned long startTime = 0;
 
+double currPres = 0;
+double currTemp = 0;
+
+String outString = "";
+
 // begin the program
 void setup() {
   Serial.begin(9600);
-
   // set up pins
   pinMode(MISO, INPUT);
   pinMode(MOSI, OUTPUT);
@@ -70,48 +72,60 @@ void setup() {
 }
 
 void loop() {
+  //Serial.println(1);
+  //doNothing();
+  //Serial.println(1);
   readCommand();
+  //delay(50);///
+  
   inString = ""; // reset inString to prepare for new command
   
+  //Serial.println(heatControl->getTemperature());
   if (hasSetPressure == true) {
 	  currentTime = micros();
 	  (*pressureControl).runPressure();
+    //pressureControl->readPressure(); TO DO: Spit out pressure value
+    currPres = pressureControl->getPressure();
 	  previousTime = currentTime;
   }
   if (hasSetHeat == true) {
-    //Serial.println("set heat");
 	  currentTime = micros();
-    //Serial.println(currentTime);
 	  if (finishedInitHeat == false) {
+      // initial rampup
 		  heatControl->runInitial(&startTime, previousTime, currentTime, &finishedInitHeat);
+      currTemp = heatControl->getTemperature();
 	  }
 	  else if (finishedInitHeat && ((double)(abs(currentTime-startTime)/1000000.0) < heatTime)){
+      // attempt to maintain temperature
 		  heatControl->runHeat(previousTime, currentTime);
-      //Serial.println("output");
-      //delay(10);
-      //Serial.println((heatControl->output));
-      //delay(10);
-      //Serial.flush();
+      currTemp = heatControl->getTemperature();
 	  } else if (finishedInitHeat && (double)(abs(currentTime-startTime)/1000000.0) > heatTime) {
       heatControl->stopHeat(); // PWM to zero
       hasSetHeat = false; // reset the system
-      finishedInitHeat = false;
-      //Serial.println("Done");
-      //Serial.println(heatTime);
-      //Serial.println("total elapsed time");
-      //Serial.println((currentTime-startTime)/1000000.0);
+      finishedInitHeat = false;      
 	  } else {
       Serial.println("Parse error");
 	  }
 	  previousTime = currentTime;
   }
+  outString += "P";
+  outString += (int)currPres*100;
+  outString += "T";
+  outString += (int)currTemp*100;
+  Serial.println(outString);
+  outString="";
+  
 }
 
+void doNothing() {
+  // do nothing
+}
 
 void readCommand() {
   //Serial.println("In command");
   if (Serial.available() > 0) {
     //Serial.println("In serial available");
+    
     int inChar = Serial.read();
     if (inChar == (int)'#') {
       //Serial.println("cmd registered");
@@ -120,9 +134,16 @@ void readCommand() {
     } else {
       return;
     }
+    
   }
-  return;
+  //return;
+  //return -1;
 }
+/*
+void beginRead() {
+  
+}
+*/
 
 void beginRead() {
   delay(5);

@@ -36,7 +36,7 @@ void Heat::runInitial(unsigned long *startTime, unsigned long previousTime, unsi
 	}
 	else {
     //Serial.println(heater.initialHeating);
-    Serial.println("Finished init");
+    //Serial.println("Finished init");
 		*finished = true;
 		heater.changeDuty(0);
     *startTime = currentTime;

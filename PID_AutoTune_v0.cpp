@@ -5,7 +5,7 @@
 #endif
 
 #include "PID_AutoTune_v0.h"
-#include "MemoryFree.h"
+//#include "MemoryFree.h"
 
 
 PID_ATune::PID_ATune(double* Input, double* Output)
@@ -121,7 +121,6 @@ int PID_ATune::Runtime()
     }
   }
    justchanged=false;
-   Serial.println(0);
 	return 0;
 }
 void PID_ATune::FinishUp()

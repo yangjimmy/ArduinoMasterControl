@@ -50,10 +50,11 @@ double MAX31865::readTemp() {
 
 	if ((curr_status & 0x80) == 0x80) {
 		//Serial.println("High threshold limit");
-		return -1;
+		//return -1;
+    return temp_C;
 	}
 	else if ((curr_status & 0x40) == 0x40) {
-		Serial.println("Low threshold limit");
+		//Serial.println("Low threshold limit");
 		//Serial.println(temp_C);
     return temp_C;
 	}
@@ -119,7 +120,7 @@ byte MAX31865::receiveByte() {
 
 double MAX31865::calcTemp(uint16_t rtd_ADC_Code) {
 	const float R_REF = 429.8;
-	const float Res0 = 100;
+	const float Res0 = 100.0;
 	const float a = 0.00390830;
 	const float b = -0.000000577500;
 	const float c = 0;
