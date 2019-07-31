@@ -54,7 +54,8 @@ double MAX31865::readTemp() {
 	}
 	else if ((curr_status & 0x40) == 0x40) {
 		//Serial.println("Low threshold limit");
-		return -1;
+		//Serial.println(temp_C);
+    return temp_C;
 	}
 	else if ((curr_status & 0x04) == 0x04) {
 		//Serial.println("Overvoltage/Undervoltage");

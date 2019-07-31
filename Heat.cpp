@@ -2,7 +2,6 @@
 #include "Heat.h"
 #include "MAX31865.h"
 #include <math.h>
-//#include "DAC1284.h"
 #include "AD5760.h"
 #include "Heater.h"
 #include <PID_v1.h>
@@ -17,8 +16,7 @@ Heat::Heat(int _MISO, int _MOSI, int _SCK, int _LDAC_rtd, int _SS_rtd, int _PWMP
 	rtd = MAX31865(_MISO, _MOSI, _SCK, _LDAC_rtd, _SS_rtd);
 	heater = Heater(_PWMPin);
 	*input = rtd.readTemp();
-  double currTemp = rtd.readTemp();
-	heater.initialHeatingTime(heatCapacity, mass, currTemp, _setPoint, wattage);
+	heater.initialHeatingTime(heatCapacity, mass, *input, _setPoint, wattage);
 
 	*setPoint = _setPoint;
 	
@@ -30,8 +28,7 @@ Heat::Heat(int _MISO, int _MOSI, int _SCK, int _LDAC_rtd, int _SS_rtd, int _PWMP
   pid.SetOutputLimits(minTemp, maxTemp);
   pid.SetMode(AUTOMATIC);
 
-  aTune = PID_ATune(input, output);
-  
+  //aTune = PID_ATune(input, output);
 }
 
 void Heat::runInitial(unsigned long *startTime, unsigned long previousTime, unsigned long currentTime, bool *finished) {
@@ -54,11 +51,13 @@ void Heat::runInitial(unsigned long *startTime, unsigned long previousTime, unsi
 void Heat::runHeat(unsigned long previous, unsigned long current) {
 	//double presentTemperature = getTemperature();
 	*input = getTemperature();
+  //Serial.println((long)*input);
 	//dt = (double)((current - previous)/1000000.0); // convert to seconds and double type
   //Serial.println("in runHeat");
 	//pid = PID(dt, maxTemp, minTemp, Kp, Kd, Ki);
   
   // autotune //
+  /*
   if(tuning)
   {
     
@@ -79,12 +78,15 @@ void Heat::runHeat(unsigned long previous, unsigned long current) {
   else {
     pid.Compute();
   }
-
+  */
+  pid.Compute();
   
 	// calculate precentage of power required
 	
 	double newDuty = *output;
 	setPower(newDuty);
+
+  //Serial.println(*output);
 }
 
 void Heat::changeValues(double newKp, double newKi, double newKd, double newSetPoint) {

@@ -92,15 +92,21 @@ void loop() {
       
       //Serial.println((currentTime-startTime)/1000000.0);
 		  heatControl->runHeat(previousTime, currentTime);
+      //Serial.println("input");
+      //Serial.println(*(heatControl->input));
+      //Serial.println("output");
+      //Serial.println(*(heatControl->output));
+      //Serial.flush();
       //Serial.println("end runheat");
 	  } else if (finishedInitHeat && (double)(abs(currentTime-startTime)/1000000.0) > heatTime) {
       heatControl->stopHeat(); // PWM to zero
       hasSetHeat = false; // reset the system
-      
+      finishedInitHeat = false;
       Serial.println("Done");
       Serial.println(heatTime);
       Serial.println("total elapsed time");
       Serial.println((currentTime-startTime)/1000000.0);
+      //Serial.flush();
 	  } else {
       //Serial.println(heatTime);
 	  }
@@ -126,7 +132,7 @@ void readCommand() {
 }
 
 void beginRead() {
-  delay(1);
+  delay(5);
   while (Serial.available() > 0) {
     //Serial.println("Available");
     int inChar = Serial.read();
@@ -138,7 +144,7 @@ void beginRead() {
     else {
       break;
     }
-    delay(1);
+    delay(5);
   }
   //Serial.println(inString);
   //Serial.println("Done Read");

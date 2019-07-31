@@ -20,6 +20,9 @@ class Heat {
 		void setPower(double percent);
 		double getTemperature();
     void stopHeat();
+
+    double *input = 0;
+    double *output = 0;
 	private:
 		Heater heater;
 		MAX31865 rtd;
@@ -27,11 +30,10 @@ class Heat {
 		double Ki = 0;
 		double Kd = 0;
 		double *setPoint = 0;
-    double *input = 0;
-    double *output = 0;
+    
 		PID pid = PID(input, output, setPoint, Kp, Ki, Kd, DIRECT);
     PID_ATune aTune = PID_ATune(input, output);
-    bool tuning = false;
+    bool tuning = true;
 		const double maxTemp = 150; // max temperature in deg Celsius
 		const double minTemp = 10; // min pressure in deg Celsius
 		double dt = 0;
