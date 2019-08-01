@@ -72,11 +72,27 @@ void setup() {
 }
 
 void loop() {
-  //Serial.println(1);
-  //doNothing();
-  //Serial.println(1);
+  //int inChar;
   readCommand();
-  //delay(50);///
+  /*
+  while (Serial.available()) 
+  {
+    // get the new byte:
+    inChar = (int)Serial.read();
+    if (inChar == (int)'#'){
+      while (inChar != (int)'\n'){
+        inString+=(char)inChar;
+      }
+    }
+  }
+  if (inString!=""){
+    Serial.println(inString);
+  }
+  inString = "";
+  */
+  //Serial.println("P12T10");
+  
+  
   
   inString = ""; // reset inString to prepare for new command
   
@@ -108,12 +124,14 @@ void loop() {
 	  }
 	  previousTime = currentTime;
   }
+  /*
   outString += "P";
   outString += (int)currPres*100;
   outString += "T";
   outString += (int)currTemp*100;
   Serial.println(outString);
   outString="";
+  */
   
 }
 
@@ -133,8 +151,7 @@ void readCommand() {
       return;
     } else {
       return;
-    }
-    
+    } 
   }
   //return;
   //return -1;

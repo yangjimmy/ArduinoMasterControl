@@ -106,7 +106,7 @@ void Heat::setPower(double x) {
 		heater.changeDuty(0);
 	}
 	else {
-		heater.changeDuty((int)(x / 100 * 255));
+		heater.changeDuty((int)(x));
 	}
 }
 
